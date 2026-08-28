@@ -17,11 +17,11 @@ const cardapio = [
   {categoria: "recheio", nome:"Frango", preco: 5.0},
   {categoria: "recheio", nome:"Carne", preco: 6.5},
   {categoria: "recheio", nome:"Peixe", preco: 6.0},
-  {categoria: "recheio", nome:"Veggie", preco: 6.5},
+  {categoria: "recheio", nome:"Vegano", preco: 6.5},
   {categoria: "molho", nome:"Maionese", preco: 0.5},
-  {categoria: "molho", nome:"Barbecue", preco: 0.5},
-  {categoria: "molho", nome:"Especial", preco: 1.5},
-  {categoria: "molho", nome:"Chipotle", preco: 1.75}
+  {categoria: "molho", nome:"Ketchup", preco: 0.5},
+  {categoria: "molho", nome:"Barbecue", preco: 1.5},
+  {categoria: "molho", nome:"Especial", preco: 1.75}
 ]
 
 // ----- exercicio 01 -----
