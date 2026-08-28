@@ -5,8 +5,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-// serve o frontend - corrigido pra não dar Cannot GET /
 app.use(express.static(path.join(__dirname, "..", "frontend")));
 
 const cardapio = [
@@ -24,27 +22,41 @@ const cardapio = [
   {categoria: "molho", nome:"Especial", preco: 1.75}
 ]
 
-// ----- exercicio 01 -----
 app.get("/", (req, res) => {
   res.send("Byte e Bun API no ar!");
 })
 
-// ----- exercicio 02 -----
 app.get("/cardapio", (req, res) => {
   res.json(cardapio);
 })
 
 app.get("/cardapio/:categoria", (req, res) => {
-  const cat = req.params.categoria;
-  const filtrado = cardapio.filter(item => item.categoria === cat);
-  res.json(filtrado);
+  res.json(cardapio.filter(i => i.categoria === req.params.categoria));
 })
 
 app.get("/site", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "frontend", "index.html"));
 })
 
+app.post("/pedido", (req, res) => {
+  const { pao, recheio, molho } = req.body;
+
+  const itemPao = cardapio.find(i => i.nome === pao);
+  const itemRecheio = cardapio.find(i => i.nome === recheio);
+  const itemMolho = cardapio.find(i => i.nome === molho);
+
+  if (!itemPao || !itemRecheio || !itemMolho) {
+    return res.status(400).json({ erro: "Item não encontrado" });
+  }
+
+  const total = itemPao.preco + itemRecheio.preco + itemMolho.preco;
+
+  res.json({
+    mensagem: "Pedido recebido!",
+    pedido: { pao: itemPao, recheio: itemRecheio, molho: itemMolho },
+    total: total
+  });
+})
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log("Rodando na porta " + PORT);
-});
+app.listen(PORT, () => console.log("Rodando " + PORT));
