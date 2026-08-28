@@ -1,24 +1,45 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Byte & Bun</title>
-  <style>
-    body{font-family:Arial;background:#111;color:#fff;padding:20px;max-width:900px;margin:auto}
-    h1{text-align:center;color:#ffcc00}
-    .box{background:#222;padding:20px;border-radius:12px;margin-bottom:20px}
-    select,button{width:100%;padding:10px;margin:5px 0;border-radius:8px;border:0}
-    button{background:#ffcc00;font-weight:bold;cursor:pointer}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-    .card{background:#2a2a2a;padding:10px;border-radius:8px}
-    .preco{color:#0f0;float:right}
-    h2{color:#ffcc00;border-bottom:1px solid #333;padding-bottom:5px;text-transform:uppercase}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Byte e Bun</title>
+<style>
+body{font-family:Arial;padding:20px;max-width:500px;margin:auto}
+select,button{width:100%;padding:10px;margin:8px 0}
+button{background:black;color:white;border:none;cursor:pointer}
+#total{font-weight:bold;font-size:20px;margin-top:15px}
+</style>
 </head>
 <body>
-  <h1>🍔 BYTE & BUN</h1>
-  <div id="app">Carregando...</div>
-  <script src="script.js"></script>
+<h1>Byte e Bun</h1>
+<label>Pão</label>
+<select id="pao"></select>
+<label>Recheio</label>
+<select id="recheio"></select>
+<label>Molho</label>
+<select id="molho"></select>
+<button onclick="fazerPedido()">Fazer Pedido</button>
+<div id="total"></div>
+
+<script>
+async function carregar(){
+  const paoRes = await fetch('/cardapio/pao').then(r=>r.json());
+  const recheioRes = await fetch('/cardapio/recheio').then(r=>r.json());
+  const molhoRes = await fetch('/cardapio/molho').then(r=>r.json());
+  paoRes.forEach(i=>document.getElementById('pao').innerHTML+=`<option>${i.nome} - R$ ${i.preco}</option>`.replace(/ - R\$.*/,'').replace('<option>','<option value="'+i.nome+'">'));
+  recheioRes.forEach(i=>document.getElementById('recheio').innerHTML+=`<option value="${i.nome}">${i.nome} - R$ ${i.preco}</option>`);
+  molhoRes.forEach(i=>document.getElementById('molho').innerHTML+=`<option value="${i.nome}">${i.nome} - R$ ${i.preco}</option>`);
+  // fix pao
+  document.getElementById('pao').innerHTML='';
+  paoRes.forEach(i=>document.getElementById('pao').innerHTML+=`<option value="${i.nome}">${i.nome} - R$ ${i.preco}</option>`);
+}
+async function fazerPedido(){
+  const body={pao:document.getElementById('pao').value,recheio:document.getElementById('recheio').value,molho:document.getElementById('molho').value};
+  const res=await fetch('/pedido',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json());
+  document.getElementById('total').innerText=`Total: R$ ${res.total}`;
+}
+carregar();
+</script>
 </body>
 </html>
