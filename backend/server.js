@@ -1,9 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "frontend")));
 
 const cardapio = [
   {categoria: "pao", nome:"Frances", preco: 1.5},
@@ -13,28 +15,29 @@ const cardapio = [
   {categoria: "recheio", nome:"Frango", preco: 5.0},
   {categoria: "recheio", nome:"Carne", preco: 6.5},
   {categoria: "recheio", nome:"Peixe", preco: 6.0},
+  {categoria: "recheio", nome:"Vegetariano", preco: 5.5},
   {categoria: "molho", nome:"Maionese", preco: 0.5},
   {categoria: "molho", nome:"Mostarda", preco: 0.5},
   {categoria: "molho", nome:"Especial", preco: 1.5},
   {categoria: "molho", nome:"Chipotle", preco: 1.75},
 ]
 
-// ----- exercicio 01 -----
-app.get("/", (req, res) => {
+// ----- EXERCICIO 01 -----
+app.get("/api", (req, res) => {
   res.send("Byte e Bun API no ar!")
 })
 
-// ----- exercicio 02 -----
+// ----- EXERCICIO 02 -----
 app.get("/cardapio", (req, res) => {
   res.json(cardapio)
 })
 
-// ----- exercicio 03 -----
+// ----- EXERCICIO 03 -----
 app.get("/cardapio/:categoria", (req, res) => {
   res.json(cardapio.filter(i => i.categoria === req.params.categoria))
 })
 
-// ----- exercicio 04 -----
+// ----- EXERCICIO 04 -----
 app.post("/pedido", (req, res) => {
   const { pao, recheio, molho } = req.body;
   let total = 0;

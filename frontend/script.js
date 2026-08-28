@@ -1,57 +1,37 @@
-const API_URL = "https://bytebun1106.onrender.com";
+const API = ""; // vazio pq front e back estão no mesmo Render
+let cardapio = [];
 
-const selectPao = document.getElementById('selectPao');
-const selectRecheio = document.getElementById('selectRecheio');
-const selectMolho = document.getElementById('selectMolho');
-const cupom = document.getElementById('cupom');
-const btn = document.getElementById('btnCalcularPedido');
-
-async function carregarDados() {
-  try {
-    const res = await fetch(`${API_URL}/produtos`);
-    const dados = await res.json();
-    
-    // Ajuste aqui conforme seu backend retorna
-    // Vou preencher com exemplo que funciona
-    const paes = dados.paes || [{nome: "Brioche", preco: 5}, {nome: "Australiano", preco: 6}];
-    const recheios = dados.recheios || [{nome: "Blend 180g", preco: 15}];
-    const molhos = dados.molhos || [{nome: "Cheddar", preco: 3}];
-
-    paes.forEach(p => {
-      let opt = document.createElement('option');
-      opt.value = JSON.stringify(p);
-      opt.textContent = `${p.nome} - R$ ${p.preco}`;
-      selectPao.appendChild(opt);
-    });
-    
-    recheios.forEach(r => {
-      let opt = document.createElement('option');
-      opt.value = JSON.stringify(r);
-      opt.textContent = `${r.nome} - R$ ${r.preco}`;
-      selectRecheio.appendChild(opt);
-    });
-    
-    molhos.forEach(m => {
-      let opt = document.createElement('option');
-      opt.value = JSON.stringify(m);
-      opt.textContent = `${m.nome} - R$ ${m.preco}`;
-      selectMolho.appendChild(opt);
-    });
-
-  } catch (e) {
-    cupom.textContent = "Erro ao conectar na API: " + e;
-    console.error(e);
-  }
+async function init(){
+  const res = await fetch(`/cardapio`);
+  cardapio = await res.json();
+  document.getElementById("app").innerHTML = `
+    <div class="box">
+      <h2>Monte seu lanche</h2>
+      Pão: <select id="pao"></select>
+      Recheio: <select id="recheio"></select>
+      Molho: <select id="molho"></select>
+      <button onclick="pedir()">CALCULAR TOTAL</button>
+      <h3 id="total"></h3>
+    </div>
+    <div id="lista"></div>
+  `;
+  fill("pao"); fill("recheio"); fill("molho");
+  renderLista();
 }
-
-btn.addEventListener('click', () => {
-  const pao = JSON.parse(selectPao.value);
-  const recheio = JSON.parse(selectRecheio.value);
-  const molho = JSON.parse(selectMolho.value);
-  
-  const total = pao.preco + recheio.preco + molho.preco;
-  
-  cupom.textContent = `--- CUPOM BYTE BUN ---\nPão: ${pao.nome}\nRecheio: ${recheio.nome}\nMolho: ${molho.nome}\n\nTOTAL: R$ ${total.toFixed(2)}`;
-});
-
-carregarDados();
+function fill(cat){
+  document.getElementById(cat).innerHTML = cardapio.filter(i=>i.categoria===cat).map(i=>`<option value="${i.nome}">${i.nome} - R$ ${i.preco}</option>`).join("");
+}
+function renderLista(){
+  const d = document.getElementById("lista");
+  ["pao","recheio","molho"].forEach(c=>{
+    d.innerHTML+=`<h2>${c}</h2><div class="grid">${cardapio.filter(i=>i.categoria===c).map(i=>`<div class="card">${i.nome}<span class="preco">R$ ${i.preco.toFixed(2)}</span></div>`).join("")}</div>`;
+  });
+}
+async function pedir(){
+  const pao=paoEl().value, recheio=recheioEl().value, molho=molhoEl().value;
+  const res = await fetch(`/pedido`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pao,recheio,molho})});
+  const data = await res.json();
+  document.getElementById("total").innerText = `R$ ${data.total} | ${pao} + ${recheio} + ${molho}`;
+}
+const paoEl=()=>document.getElementById("pao"), recheioEl=()=>document.getElementById("recheio"), molhoEl=()=>document.getElementById("molho");
+init();

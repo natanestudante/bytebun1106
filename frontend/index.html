@@ -1,28 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Byte Bun</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Byte & Bun</title>
+  <style>
+    body{font-family:Arial;background:#111;color:#fff;padding:20px;max-width:900px;margin:auto}
+    h1{text-align:center;color:#ffcc00}
+    .box{background:#222;padding:20px;border-radius:12px;margin-bottom:20px}
+    select,button{width:100%;padding:10px;margin:5px 0;border-radius:8px;border:0}
+    button{background:#ffcc00;font-weight:bold;cursor:pointer}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+    .card{background:#2a2a2a;padding:10px;border-radius:8px}
+    .preco{color:#0f0;float:right}
+    h2{color:#ffcc00;border-bottom:1px solid #333;padding-bottom:5px;text-transform:uppercase}
+  </style>
 </head>
 <body>
-<div class="container">
-<h1>BYTE BUN</h1>
-
-<label>Pão</label>
-<select id="selectPao"></select>
-
-<label>Recheio</label>
-<select id="selectRecheio"></select>
-
-<label>Molho</label>
-<select id="selectMolho"></select>
-
-<button id="btnCalcularPedido">Calcular Pedido</button>
-
-<pre id="cupom">Seu cupom vai aparecer aqui</pre>
-</div>
-<script src="script.js"></script>
+  <h1>🍔 BYTE & BUN</h1>
+  <div id="app">Carregando...</div>
+  <script src="script.js"></script>
 </body>
 </html>
