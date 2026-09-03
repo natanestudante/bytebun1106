@@ -1,5 +1,5 @@
 const imagens = {
-  Frances: "https://images.unsplash.com/photo-1589367920969-ab8c050bbb74?w=400",
+  Frances: "https://www.estadao.com.br/resizer/v2/YGTBNTCNPZEQBMWTZVUIIZWPSY.jpeg?quality=80&auth=2da0c65f3b7401e625a1129b5014cf70f45735ce27f264e50068a9994d8bd252&width=720&height=410&focal=3096,2786",
   Integral: "https://images.unsplash.com/photo-1549931319-a545dcf3d696?w=400",
   Australiano: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400",
   Ciabatta: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400",
