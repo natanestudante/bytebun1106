@@ -1,31 +1,51 @@
-async function carregar() {
-  const res = await fetch("/cardapio");
-  const cardapio = await res.json();
-  
-  const selects = document.querySelectorAll("select");
-  const fill = (cat, sel) => {
-    sel.innerHTML = '<option value="">Selecione</option>';
-    cardapio.filter(i => i.categoria === cat).forEach(i => {
-      sel.innerHTML += `<option value="${i.nome}">${i.nome} - R$ ${i.preco}</option>`;
-    });
-  };
-  fill("pao", selects[0]);
-  fill("recheio", selects[1]);
-  fill("molho", selects[2]);
+async function carregarCardapio() {
+  try {
+    const res = await fetch("/cardapio");
+    const data = await res.json();
+
+    const paoSelect = document.querySelectorAll("select")[0];
+    const recheioSelect = document.querySelectorAll("select")[1];
+    const molhoSelect = document.querySelectorAll("select")[2];
+
+    function preencher(select, itens) {
+      select.innerHTML = '<option value="">Selecione</option>';
+      itens.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item;
+        opt.textContent = item;
+        select.appendChild(opt);
+      });
+    }
+
+    preencher(paoSelect, data.pao);
+    preencher(recheioSelect, data.recheio);
+    preencher(molhoSelect, data.molho);
+
+  } catch (err) {
+    console.error("Erro ao carregar cardapio", err);
+  }
 }
-carregar();
+
+carregarCardapio();
 
 document.querySelector("button").addEventListener("click", async () => {
-  const s = document.querySelectorAll("select");
-  const pedido = { pao: s[0].value, recheio: s[1].value, molho: s[2].value };
-  
-  if(!pedido.pao || !pedido.recheio || !pedido.molho) return alert("Seleciona tudo!");
-  
+  const selects = document.querySelectorAll("select");
+  const pedido = {
+    pao: selects[0].value,
+    recheio: selects[1].value,
+    molho: selects[2].value
+  };
+
+  if(!pedido.pao ||!pedido.recheio ||!pedido.molho){
+    alert("Seleciona tudo!");
+    return;
+  }
+
   const res = await fetch("/pedido", {
     method: "POST",
-    headers: {"Content-Type":"application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(pedido)
   });
-  const data = await res.json();
-  alert(`${data.mensagem}\nTotal: R$ ${data.total.toFixed(2)}`);
+  const json = await res.json();
+  alert(json.mensagem);
 });
